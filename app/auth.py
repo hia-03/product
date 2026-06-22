@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from fastapi import HTTPException, Request, Depends, status
 from fastapi.security import HTTPBearer,HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from models import *
+from .models import *
 from db_config import get_db
 
 import os
