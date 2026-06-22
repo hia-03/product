@@ -56,6 +56,7 @@ def login_view(data:Loginschemas,db:Session = Depends(get_db)):
 def logout_view(db:Session = Depends(get_db),credentials:HTTPAuthorizationCredentials=Depends(security)):
     jwt_token = credentials.credentials
     print(jwt_token)
+    
     refresh_token = db.query(RefreshToken).filter(RefreshToken.token == jwt_token).first()
     if not refresh_token:
         raise HTTPException(
