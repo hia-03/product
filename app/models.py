@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,Date,ForeignKey,Table,DateTime,Boolean,Enum as SqlEnum,UniqueConstraint,Text
+from sqlalchemy import Column,Integer,String,Date,ForeignKey,Table,DateTime,Boolean,Enum as SqlEnum,UniqueConstraint,Text,Float
 from sqlalchemy.orm import DeclarativeBase,relationship
 import enum
 from datetime import datetime
@@ -20,6 +20,7 @@ class UserModel(BaseModel):
     created_at = Column(DateTime,default=datetime.utcnow)
 
     products = relationship("Product",back_populates="owner")
+    refreshtok = relationship("RefreshToken", back_populates="userid")
 
 
 
@@ -29,7 +30,19 @@ class Product(BaseModel):
     id = Column(Integer,primary_key=True,index=True,autoincrement=True)
     title = Column(String(100))
     description = Column(String(255))
-    price = Column(float)
+    price = Column(Float)
     owner_id = Column(Integer,ForeignKey("users.id"),nullable=False)
 
     owner = relationship("UserModel",back_populates="products")
+
+
+
+class RefreshToken(BaseModel):
+    __tablename__ = "refresh_tokens"
+
+    id = Column(Integer,primary_key=True,index=True,autoincrement=True)
+    user_id = Column(Integer,ForeignKey("users.id"),nullable=False)
+    token = Column(String(255),unique=True)
+    expires_at = Column(DateTime,nullable=False)
+
+    userid = relationship("UserModel",back_populates="refreshtok")
