@@ -1,10 +1,12 @@
 import uvicorn
 from fastapi import FastAPI,Request
 from fastapi.responses import Response
-
+from app.views import account
 
 
 app = FastAPI()
+
+app.include_router(account)
 
 
 
