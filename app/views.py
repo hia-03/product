@@ -2,6 +2,7 @@ from fastapi import APIRouter,Depends,HTTPException,FastAPI,Request
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from db_config import get_db
+from datetime import datetime, timedelta
 from .models import *
 from .schemas import *
 from .helpers import *
@@ -39,4 +40,33 @@ def login_view(data:Loginschemas,db:Session = Depends(get_db)):
             detail="Invalid username or password"
         )
     token = sign_jwt(user.username)
+    refresh_token = RefreshToken(
+    user_id=user.id,
+    token=token["access_token"],
+    expires_at=datetime.utcnow() + timedelta(days=7)
+)
+    db.add(refresh_token)
+    db.commit()
+    
     return token
+
+
+
+@account.post("/logout",tags=['auth'])
+def logout_view(db:Session = Depends(get_db),credentials:HTTPAuthorizationCredentials=Depends(security)):
+    jwt_token = credentials.credentials
+    print(jwt_token)
+    refresh_token = db.query(RefreshToken).filter(RefreshToken.token == jwt_token).first()
+    if not refresh_token:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Refresh token not found"
+        )
+    print(refresh_token)
+    db.delete(refresh_token)
+    db.commit()
+    print(refresh_token)
+
+    return {
+        "message":"Logged out successfully"
+    }
