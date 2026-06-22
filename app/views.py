@@ -31,4 +31,12 @@ def register_accounts(request:Request,data:RegisterSchemas,db:Session = Depends(
 
 
 @account.post("/login",tags=['auth'])
-def login_view(data:)
+def login_view(data:Loginschemas,db:Session = Depends(get_db)):
+    user = db.query(UserModel).filter(UserModel.username == data.username).first()
+    if not user or not verify_password(data.password,user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password"
+        )
+    token = sign_jwt(user.username)
+    return token

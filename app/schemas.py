@@ -20,4 +20,7 @@ class RegisterSchemas(BaseModel):
             )
         return self
     
-    
+
+class Loginschemas(BaseModel):
+    username:str
+    password:str
