@@ -81,7 +81,7 @@ def upda_by_admin(
     db:Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ):
-    is_superusers(get_current_user)
+    is_superusers(current_user)
 
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
@@ -108,7 +108,7 @@ def delproduct_by_admin(
     db:Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ):
-    is_superusers(get_current_user)
+    is_superusers(current_user)
 
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
