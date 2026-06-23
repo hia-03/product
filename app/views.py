@@ -7,6 +7,7 @@ from .models import *
 from .schemas import *
 from .helpers import *
 from .auth import *
+from .pagination import *
 account = APIRouter()
 
 
@@ -70,6 +71,42 @@ def logout_view(db:Session = Depends(get_db),credentials:HTTPAuthorizationCreden
 
     return {
         "message":"Logged out successfully"
+    }
+##
+@account.get("/products/search", tags=['product'])
+def search_product(
+    title:str,
+    db:Session = Depends(get_db)
+):
+    products = db.query(Product).filter(Product.title.contains(title)).all()
+    if not products:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+    return products
+
+
+@account.get("/product/bypage", tags=['product'])
+def gett_product(
+    page:int = 1,
+    db:Session = Depends(get_db)
+):
+    offset,limit = pagination(page,4)
+
+    products = db.query(Product).offset(offset).limit(limit).all()
+    if not products:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+
+    return {
+        "page": page,
+        "limit": 4,
+        "data": products
     }
 
 
@@ -202,19 +239,7 @@ def  get_all_product(
     
     return products
 
-@account.get("/products/search", tags=['product'])
-def search_product(
-    title:str,
-    db:Session = Depends(get_db)
-):
-    products = db.query(Product).filter(Product.title.contains(title)).all()
-    if not products:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Product not found"
-        )
-    
-    return products
+
 
 
 

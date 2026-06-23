@@ -7,9 +7,10 @@ from .models import *
 from .schemas import *
 from .helpers import *
 from .auth import *
-
+from .pagination import *
 
 adminn = APIRouter()
+
 
 
 @adminn.get("/admin/products",tags=['admin'])
@@ -123,3 +124,8 @@ def delproduct_by_admin(
     return {
         "message": "Product deleted successfully by admin"
     }
+
+
+
+
+
