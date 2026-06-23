@@ -202,6 +202,22 @@ def  get_all_product(
     
     return products
 
+@account.get("/products/search", tags=['product'])
+def search_product(
+    title:str,
+    db:Session = Depends(get_db)
+):
+    products = db.query(Product).filter(Product.title.contains(title)).all()
+    if not products:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+    return products
+
+
+
 @account.get("/products/{products_id}",tags=['product'])
 def get_id_products(
     products_id:int,
@@ -215,3 +231,4 @@ def get_id_products(
         )
     
     return products
+
