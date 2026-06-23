@@ -170,3 +170,18 @@ def delete_product_by_id(
         "message": f"Product {product_id} deleted succesfully"
     }
     
+
+@account.get("/all-product",tags=['products'])
+def get_my_product(
+    db:Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    products = db.query(Product).filter(Product.owner_id == current_user.id).all()
+
+    if not products:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+    return products
