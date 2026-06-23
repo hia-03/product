@@ -185,3 +185,33 @@ def get_my_product(
         )
     
     return products
+
+#// dlya polzovateley
+
+@account.get("/all-products",tags=['product'])
+def  get_all_product(
+    db: Session = Depends(get_db)
+):
+    products = db.query(Product).all()
+
+    if not products:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+    return products
+
+@account.get("/products/{products_id}",tags=['product'])
+def get_id_products(
+    products_id:int,
+    db:Session = Depends(get_db)
+):
+    products = db.query(Product).filter(Product.id == products_id).first()
+    if not products:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+    return products
