@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Product Shop</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav id="nav"></nav>
+
+  <main>
+    <h1>Products</h1>
+
+    <div id="alert"></div>
+
+    <form id="search-form" class="search-bar">
+      <input type="text" id="search-input" placeholder="Search products by title..." />
+      <button type="submit">Search</button>
+      <button type="button" id="clear-search" class="secondary">Clear</button>
+    </form>
+
+    <div id="grid" class="grid"></div>
+
+    <div id="pagination" class="pagination"></div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
