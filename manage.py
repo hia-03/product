@@ -2,12 +2,13 @@ import uvicorn
 from fastapi import FastAPI,Request
 from fastapi.responses import Response
 from app.views import account
+from app.admin import adminn
 
 
 app = FastAPI()
 
 app.include_router(account)
-
+app.include_router(adminn)
 
 
 @app.get("/health")

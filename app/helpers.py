@@ -20,3 +20,11 @@ def check_owner_and_ownerproduct(product,current_user):
         ) 
     
     return True
+
+
+def is_superusers(user: UserModel):
+    if not user.is_superuser:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin Only"
+        )
