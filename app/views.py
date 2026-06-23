@@ -95,3 +95,26 @@ def add_product(data:ProductsSchemas,db:Session = Depends(get_db),current_user: 
     return {
         "message": f"Product created Product name {product.title}"
     }
+
+
+@account.post("/product/{product_id}",tags=['products'])
+def get_product_by_id(
+    product_id: int,
+    db:Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)):
+    
+    product = db.query(Product).filter(Product.id == product_id).first()
+
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+    check_owner_and_ownerproduct(product,current_user)
+
+    return product
+    
+
+
+@account.put("/product/{product_id}",tags=['product'])
