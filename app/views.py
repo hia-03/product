@@ -97,7 +97,7 @@ def add_product(data:ProductsSchemas,db:Session = Depends(get_db),current_user: 
     }
 
 
-@account.post("/product/{product_id}",tags=['products'])
+@account.get("/product/{product_id}",tags=['products'])
 def get_product_by_id(
     product_id: int,
     db:Session = Depends(get_db),
@@ -114,7 +114,59 @@ def get_product_by_id(
     check_owner_and_ownerproduct(product,current_user)
 
     return product
+
+
+
+
+@account.put("/product/up/{product_id}",tags=['products'])
+def update_product_by_id(
+    product_id: int,
+    data: ProductsSchemas,
+    db:Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    product = db.query(Product).filter(Product.id == product_id).first()
+
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
     
+    check_owner_and_ownerproduct(product,current_user)
 
+    product.title = data.title
+    product.description = data.description
+    product.price = data.price
 
-@account.put("/product/{product_id}",tags=['product'])
+    db.commit()
+    db.refresh(product)
+
+    return {
+        "message": f"Product {product_id} update successfully"
+    }
+
+@account.delete("/product/del/{product_id}",tags=['products'])
+def delete_product_by_id(
+    product_id: int,
+    db:Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    
+    product = db.query(Product).filter(Product.id == product_id).first()
+
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
+        )
+    
+    check_owner_and_ownerproduct(product,current_user)
+
+    db.delete(product)
+    db.commit()
+
+    return {
+        "message": f"Product {product_id} deleted succesfully"
+    }
+    
