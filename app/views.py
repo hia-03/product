@@ -71,3 +71,27 @@ def logout_view(db:Session = Depends(get_db),credentials:HTTPAuthorizationCreden
     return {
         "message":"Logged out successfully"
     }
+
+
+# //
+
+@account.post("/add-product",tags=['products'])
+def add_product(data:ProductsSchemas,db:Session = Depends(get_db),current_user: UserModel = Depends(get_current_user)):
+    print("rizooo")
+    print(current_user.id)
+    print(current_user.id)
+    print("rizo")
+    product = Product(
+        title = data.title,
+        description = data.description,
+        price = data.price,
+        owner_id = current_user.id
+    )
+    db.add(product)
+    db.commit()
+    print(current_user.id)
+
+
+    return {
+        "message": f"Product created Product name {product.title}"
+    }

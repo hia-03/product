@@ -24,3 +24,9 @@ class RegisterSchemas(BaseModel):
 class Loginschemas(BaseModel):
     username:str
     password:str
+
+
+class ProductsSchemas(BaseModel):
+    title:str
+    description:str
+    price:float

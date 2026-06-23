@@ -75,7 +75,8 @@ def jwt_required(
 def get_current_user(
         payload: dict = Depends(jwt_required),
         db:Session = Depends(get_db)) -> UserModel:
-    user_email = payload("user_id")
+    user_email = payload.get("user_id")
+    print("USER_ID:", user_email)
     if user_email is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -83,9 +84,12 @@ def get_current_user(
         )
     
     user = db.query(UserModel).filter(UserModel.username == user_email).first()
+    print("USER:", user)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail = "User Not Found" 
         )
+    
+    return user
     
